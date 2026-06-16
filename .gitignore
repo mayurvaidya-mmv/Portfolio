@@ -1,0 +1,21 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# Gemini Agent Files
+.gemini/
+.tempmediaStorage/
+transcript.jsonl
+walkthrough.md
+task.md
+implementation_plan.md
+analysis_results.md
+research_notes.md
+experiment_results.md
+*.ipynb
+
+# Local Dev
+node_modules/
+dist/
+.env
+.vscode/
