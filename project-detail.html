@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Detail</title>
+  <meta name="theme-color" content="#050505">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-detail-page">
+  <header class="detail-header">
+    <div class="detail-header-inner">
+      <a href="index.html" class="detail-back">← Back to portfolio</a>
+      <button class="theme-toggle detail-theme-toggle" id="detailThemeToggle" type="button" aria-label="Toggle light and dark theme">
+        <span class="theme-icon theme-icon-sun" aria-hidden="true">☀</span>
+        <span class="theme-icon theme-icon-moon" aria-hidden="true">☾</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="project-detail-shell">
+    <div class="container" id="detailRoot"></div>
+  </main>
+
+  <div class="lightbox" id="detailLightbox">
+    <button class="lightbox-close" id="detailLightboxClose" aria-label="Close viewer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <button class="lightbox-arrow lightbox-arrow-prev" id="detailLightboxPrev" aria-label="Previous media">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="lightbox-arrow lightbox-arrow-next" id="detailLightboxNext" aria-label="Next media">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+    <div class="lightbox-content-wrapper">
+      <div class="lightbox-media-container" id="detailLightboxMedia"></div>
+      <div class="lightbox-caption" id="detailLightboxCaption"></div>
+    </div>
+  </div>
+
+  <script>
+    const PROJECTS = {
+      powerpulse: {
+        eyebrow: 'Project 01',
+        title: 'PowerPulse',
+        subtitle: 'Design and development of an energy monitoring and visualization platform for multifunction meters',
+        summary: 'IoT-based monitoring for grid and DG meters with cloud storage, live dashboards, and historical analysis.',
+        abstract: 'As the need for efficiency in energy usage grows in college campuses and commercial facilities, monitoring electrical parameters in real time is becoming highly important. Manual approaches are cumbersome, error-prone, and do not provide live insight or historical analysis. This project focuses on IoT-based energy monitoring by establishing communication between Secure Elite 440 (Grid) and Secure Elite 300 (Diesel Generator) meters and a Teltonika TRB245 gateway through RS-485 Modbus RTU. The collected data is sent to AWS IoT Core as MQTT messages. A Node.js and Express.js server stores data in DynamoDB based on server_id, while a Chart.js dashboard provides visualization of live and historical data. The system supports accurate meter separation, WebSocket-based live updates, and scalable access for institutional energy monitoring. In testing, the system achieved near real-time performance with an average latency of about 0.8 seconds, a maximum latency of about 1.3 seconds, zero packet loss, and stable three-phase voltage measurements during continuous operation.',
+        highlights: ['RS-485 Modbus RTU', 'AWS IoT Core', 'Node.js / Express.js', 'DynamoDB', 'Chart.js'],
+        reportLabel: 'Project Report',
+        reportHref: 'Projects/PowerPulse_DESIGN_AND_DEVELOPMENT_OF_ENERGY_MONITORING_AND_VISUALIZATION_PLATFORM_FOR_MULTIFUNCTION_METERS/Project_Report_Print.pdf',
+        media: [
+          { type: 'image', src: 'Projects/PowerPulse_DESIGN_AND_DEVELOPMENT_OF_ENERGY_MONITORING_AND_VISUALIZATION_PLATFORM_FOR_MULTIFUNCTION_METERS/sys architecture.png', caption: 'System architecture' },
+          { type: 'image', src: 'Projects/PowerPulse_DESIGN_AND_DEVELOPMENT_OF_ENERGY_MONITORING_AND_VISUALIZATION_PLATFORM_FOR_MULTIFUNCTION_METERS/Cloud Architecture.png', caption: 'Cloud architecture' },
+          { type: 'image', src: 'Projects/PowerPulse_DESIGN_AND_DEVELOPMENT_OF_ENERGY_MONITORING_AND_VISUALIZATION_PLATFORM_FOR_MULTIFUNCTION_METERS/1_AI Summary 2026-05-07 173355.png', caption: 'AI summary snapshot' },
+          { type: 'image', src: 'Projects/PowerPulse_DESIGN_AND_DEVELOPMENT_OF_ENERGY_MONITORING_AND_VISUALIZATION_PLATFORM_FOR_MULTIFUNCTION_METERS/generated report_1_ 2026-05-06 155954.png', caption: 'Generated report preview' }
+        ]
+      },
+      swiftvoltkit: {
+        eyebrow: 'Project 02',
+        title: 'SwiftVoltKit',
+        subtitle: 'Streamlined assembly and testing of Janitza Class A analyser',
+        summary: 'Power quality tooling with a simpler interface, transient analysis, and easier data retrieval.',
+        abstract: 'SwiftVoltKit was developed in response to the need for precise power quality measurement tools in industrial and residential contexts. The project extends the Janitza UMG 512 Pro Class A analyser with a more approachable workflow and advanced diagnostic capability, including transient analysis. The interface streamlines configuration, supports real-time data visualization, and makes data retrieval more convenient for users with different levels of technical experience. The result is a practical power quality solution that combines advanced instrumentation with a simpler operating flow for monitoring stable and reliable power supply behavior.',
+        highlights: ['Janitza UMG 512 Pro', 'Transient analysis', 'Interface design', 'Real-time visualization'],
+        reportLabel: 'Project Report PDF',
+        reportHref: 'Projects/Project_SwiftVoltKit_Streamlined_Assembly_and_Testing_of_Janitza_Class_A_Analyser/EM Report.pdf',
+        extraReportLabel: 'Report DOCX',
+        extraReportHref: 'Projects/Project_SwiftVoltKit_Streamlined_Assembly_and_Testing_of_Janitza_Class_A_Analyser/EM Report.docx',
+        media: [
+          { type: 'image', src: 'Projects/Project_SwiftVoltKit_Streamlined_Assembly_and_Testing_of_Janitza_Class_A_Analyser/Block Diagram SwiftVoltKit.png', caption: 'Block diagram' },
+          { type: 'image', src: 'Projects/Project_SwiftVoltKit_Streamlined_Assembly_and_Testing_of_Janitza_Class_A_Analyser/Screenshot 2026-07-17 185354.png', caption: 'System screen' }
+        ]
+      },
+      hydrosense: {
+        eyebrow: 'Project 03',
+        title: 'HydroSense',
+        subtitle: 'Microcontroller based GSM water management system for real-time monitoring and efficient usage control',
+        summary: 'Water-level, flow, and usage monitoring with SMS alerts and automated control support.',
+        abstract: 'HydroSense is a microcontroller-based GSM water management system designed to support real-time monitoring, efficient usage control, and more sustainable water use. The system integrates sensors that track parameters such as water level, flow rate, and quality, and transmits this data using GSM to a central server or directly to user devices. Users can receive alerts and updates through SMS notifications, while the controller can regulate supply based on preset thresholds and user-defined parameters. The design supports residential, agricultural, and industrial water distribution contexts and demonstrates a practical path toward reducing wastage and improving allocation.',
+        highlights: ['Microcontroller', 'GSM alerts', 'Real-time monitoring', 'Automated control'],
+        reportLabel: 'Project Report PDF',
+        reportHref: 'Projects/HYDROSENSE_Microcontroller_based_GSM_water_management _system_for_real_time_monitoring_and_efficient_usage_control/micareport02.pdf',
+        media: [
+          { type: 'image', src: 'Projects/HYDROSENSE_Microcontroller_based_GSM_water_management _system_for_real_time_monitoring_and_efficient_usage_control/Screenshot 2026-07-17 185547.png', caption: 'Monitoring view' },
+          { type: 'image', src: 'Projects/HYDROSENSE_Microcontroller_based_GSM_water_management _system_for_real_time_monitoring_and_efficient_usage_control/Screenshot 2026-07-17 185621.png', caption: 'System view' }
+        ]
+      },
+      'face-recognition': {
+        eyebrow: 'Project 04',
+        title: 'Computer Vision-Based Face Detection and Recognition System',
+        subtitle: 'Python and OpenCV application for real-time face detection and recognition',
+        summary: 'Haar Cascade-based face and eye detection with image and video support.',
+        abstract: 'This computer vision application was developed using Python and OpenCV for real-time face detection and recognition. Haar Cascade classifiers are used for face and eye detection, enabling facial feature localization in both images and video streams. The system was extended to support face recognition, creating a practical entry point into applied computer vision and deep learning. The project demonstrates how a lightweight vision pipeline can be assembled for simple, fast, and explainable facial analysis tasks.',
+        highlights: ['Python', 'OpenCV', 'Haar Cascade', 'Real-time detection'],
+        media: [
+          { type: 'image', src: 'Projects/Computer Vision-Based Face Detection and Recognition System/Screenshot (102).png', caption: 'Face detection screen 1' },
+          { type: 'image', src: 'Projects/Computer Vision-Based Face Detection and Recognition System/Screenshot (103).png', caption: 'Face detection screen 2' },
+          { type: 'image', src: 'Projects/Computer Vision-Based Face Detection and Recognition System/Screenshot (105).png', caption: 'Recognition screen 1' },
+          { type: 'image', src: 'Projects/Computer Vision-Based Face Detection and Recognition System/Screenshot (106).png', caption: 'Recognition screen 2' }
+        ]
+      }
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const projectKey = params.get('project') || 'powerpulse';
+    const project = PROJECTS[projectKey] || PROJECTS.powerpulse;
+
+    const root = document.getElementById('detailRoot');
+    const mediaMarkup = project.media.map((item, index) => {
+      if (item.type === 'video') {
+        return `<video src="${item.src}" muted loop playsinline data-index="${index}"></video>`;
+      }
+      return `<img src="${item.src}" alt="${item.caption}" data-index="${index}">`;
+    }).join('');
+
+    root.innerHTML = `
+      <section class="detail-hero">
+        <div class="detail-panel glass-card">
+          <div class="detail-eyebrow">${project.eyebrow}</div>
+          <h1 class="detail-title">${project.title}</h1>
+          <p class="detail-summary">${project.subtitle}</p>
+          <div class="detail-meta">
+            ${project.highlights.map(item => `<span class="tag">${item}</span>`).join('')}
+          </div>
+          <p class="detail-abstract">${project.summary}</p>
+          <div class="detail-section">
+            <h2>Abstract</h2>
+            <p class="detail-abstract">${project.abstract}</p>
+          </div>
+          <div class="detail-actions">
+            ${project.reportHref ? `<a class="btn btn-primary" href="${project.reportHref}" target="_blank" rel="noopener">Open report</a>` : ''}
+            ${project.extraReportHref ? `<a class="btn btn-secondary" href="${project.extraReportHref}" target="_blank" rel="noopener">Open source report</a>` : ''}
+          </div>
+        </div>
+        <div class="detail-gallery">
+          <div class="detail-panel glass-card">
+            <h2>Media</h2>
+            <p class="detail-summary">Click any image to view it full-screen.</p>
+          </div>
+          <div class="detail-gallery-grid" id="detailGallery">${mediaMarkup}</div>
+        </div>
+      </section>
+      <section class="detail-section glass-card detail-panel">
+        <h2>What this project shows</h2>
+        <ul class="detail-bullets">
+          <li>Real hardware or data flow rather than placeholder concept art.</li>
+          <li>Clear implementation path from sensing to visualization or control.</li>
+          <li>Enough detail for a viewer to understand the problem, method, and result quickly.</li>
+        </ul>
+      </section>
+    `;
+
+    const themeToggle = document.getElementById('detailThemeToggle');
+    const themeKey = 'mayur-portfolio-theme';
+
+    function applyTheme(theme) {
+      document.body.classList.toggle('theme-light', theme === 'light');
+      if (themeToggle) {
+        themeToggle.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+      }
+    }
+
+    applyTheme(localStorage.getItem(themeKey) || 'dark');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+        localStorage.setItem(themeKey, nextTheme);
+        applyTheme(nextTheme);
+      });
+    }
+
+    const lightbox = document.getElementById('detailLightbox');
+    const lightboxMedia = document.getElementById('detailLightboxMedia');
+    const lightboxCaption = document.getElementById('detailLightboxCaption');
+    const lightboxClose = document.getElementById('detailLightboxClose');
+    const lightboxPrev = document.getElementById('detailLightboxPrev');
+    const lightboxNext = document.getElementById('detailLightboxNext');
+    const galleryItems = Array.from(document.querySelectorAll('#detailGallery img, #detailGallery video'));
+    let currentIndex = 0;
+
+    function renderMedia(index) {
+      const item = project.media[index];
+      if (!item) return;
+      lightboxMedia.innerHTML = '';
+      if (item.type === 'video') {
+        const video = document.createElement('video');
+        video.src = item.src;
+        video.controls = true;
+        video.autoplay = true;
+        lightboxMedia.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.caption;
+        lightboxMedia.appendChild(img);
+      }
+      lightboxCaption.textContent = item.caption;
+    }
+
+    function openLightbox(index) {
+      currentIndex = index;
+      renderMedia(currentIndex);
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      lightboxMedia.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    function nextMedia() {
+      currentIndex = (currentIndex + 1) % project.media.length;
+      renderMedia(currentIndex);
+    }
+
+    function prevMedia() {
+      currentIndex = (currentIndex - 1 + project.media.length) % project.media.length;
+      renderMedia(currentIndex);
+    }
+
+    galleryItems.forEach((item, index) => {
+      item.addEventListener('click', () => openLightbox(index));
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightboxNext.addEventListener('click', nextMedia);
+    lightboxPrev.addEventListener('click', prevMedia);
+    lightbox.addEventListener('click', (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowRight') nextMedia();
+      if (event.key === 'ArrowLeft') prevMedia();
+    });
+  </script>
+</body>
+</html>
