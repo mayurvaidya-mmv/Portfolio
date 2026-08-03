@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leadership Gallery — Mayur Vaidya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&family=DM+Sans:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-detail-page">
+
+  <!-- Header -->
+  <header class="detail-header">
+    <div class="detail-header-inner">
+      <a href="index.html#leadership" class="detail-back">← Back to portfolio</a>
+      <button class="theme-toggle" id="galleryThemeToggle" type="button" aria-label="Toggle theme">☀</button>
+    </div>
+  </header>
+
+  <main class="project-detail-shell" id="galleryRoot"></main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="galleryLightbox" role="dialog" aria-modal="true">
+    <button class="lightbox-close" id="galleryLightboxClose" aria-label="Close">✕</button>
+    <button class="lightbox-arrow lightbox-arrow-prev" id="galleryLightboxPrev" aria-label="Previous">❮</button>
+    <button class="lightbox-arrow lightbox-arrow-next" id="galleryLightboxNext" aria-label="Next">❯</button>
+    <div class="lightbox-content-wrapper">
+      <div class="lightbox-media-container" id="galleryLightboxMedia"></div>
+      <div class="lightbox-caption" id="galleryLightboxCaption"></div>
+    </div>
+  </div>
+
+  <script>
+    // ── Data ──────────────────────────────────────────────────────────────────
+    const ROLES = {
+      antariksh: {
+        title: 'Technical Secretary',
+        org: 'Antariksh Space Club',
+        period: '2024 – 2026',
+        description: '',
+        media: [
+          { type: 'image', src: 'Antariksh Space Club/Picsart_25-02-07_10-33-53-802.jpg.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/antariksh-1.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/antariksh-2.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/antariksh-3.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/antariksh-4.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/antariksh-5.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/antariksh-6.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/WhatsApp Image 2026-06-17 at 12.38.47 AM.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/WhatsApp Image 2026-06-17 at 12.38.47 AM (1).jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/WhatsApp Image 2026-06-17 at 12.38.48 AM.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/WhatsApp Image 2026-06-17 at 12.38.48 AM (1).jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/WhatsApp Image 2026-06-17 at 12.38.48 AM (2).jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/1000180254.jpg.jpeg', caption: 'Antariksh Space Club' },
+          { type: 'image', src: 'Antariksh Space Club/IMG-20240224-WA0008.jpg.jpeg', caption: 'Antariksh Space Club' },
+        ]
+      },
+      vyoma26: {
+        title: 'Founding Member & Advisory Executive',
+        org: "VYOMA '26",
+        period: '2026',
+        description: '',
+        media: [
+          { type: 'image', src: 'VYOMA 2026/1000353019.jpg.jpeg', caption: 'VYOMA 2026' },
+          { type: 'image', src: 'VYOMA 2026/1000353021.jpg.jpeg', caption: 'VYOMA 2026' },
+          { type: 'image', src: 'VYOMA 2026/1000353022.jpg.jpeg', caption: 'VYOMA 2026' },
+          { type: 'image', src: 'VYOMA 2026/WhatsApp Image 2026-06-17 at 2.13.36 AM.jpeg', caption: 'VYOMA 2026' },
+          { type: 'video', src: 'VYOMA 2026/1000353041.mp4', caption: 'VYOMA 2026 – Video 1' },
+          { type: 'video', src: 'VYOMA 2026/1000353539.mp4', caption: 'VYOMA 2026 – Video 2' },
+        ]
+      },
+      vyoma25: {
+        title: 'Founding Member & Strategic Head',
+        org: "VYOMA '25",
+        period: '2025',
+        description: '',
+        media: [
+          { type: 'image', src: 'VYOMA 2025/WhatsApp Image 2026-06-17 at 2.13.36 AM.jpeg', caption: 'VYOMA 2025' },
+        ]
+      }
+    };
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    const params = new URLSearchParams(window.location.search);
+    const roleKey = params.get('role') || 'antariksh';
+    const role = ROLES[roleKey] || ROLES.antariksh;
+
+    document.title = `${role.org} — Mayur Vaidya`;
+
+    const root = document.getElementById('galleryRoot');
+
+    const mediaHTML = role.media.map((item, i) => {
+      if (item.type === 'video') {
+        return `<div class="gallery-item" data-index="${i}">
+          <video src="${item.src}" muted playsinline preload="metadata"></video>
+          <span class="gallery-item-play">▶</span>
+        </div>`;
+      }
+      return `<div class="gallery-item" data-index="${i}">
+        <img src="${item.src}" alt="${item.caption}" loading="lazy">
+      </div>`;
+    }).join('');
+
+    root.innerHTML = `
+      <div class="gallery-page-header">
+        <div class="detail-eyebrow">${role.period}</div>
+        <h1 class="gallery-page-title">${role.title}</h1>
+        <div class="gallery-page-org">${role.org}</div>
+        ${role.description ? `<p class="gallery-page-desc">${role.description}</p>` : ''}
+      </div>
+      <hr class="section-divider" style="margin: 32px 0;">
+      <div class="gallery-grid">
+        ${mediaHTML}
+      </div>
+    `;
+
+    // ── Lightbox ──────────────────────────────────────────────────────────────
+    const lightbox = document.getElementById('galleryLightbox');
+    const lbMedia = document.getElementById('galleryLightboxMedia');
+    const lbCaption = document.getElementById('galleryLightboxCaption');
+    const lbClose = document.getElementById('galleryLightboxClose');
+    const lbPrev = document.getElementById('galleryLightboxPrev');
+    const lbNext = document.getElementById('galleryLightboxNext');
+    let currentIdx = 0;
+
+    function renderLb(idx) {
+      const item = role.media[idx];
+      lbMedia.innerHTML = '';
+      if (item.type === 'video') {
+        const v = document.createElement('video');
+        v.src = item.src;
+        v.controls = true;
+        v.autoplay = true;
+        lbMedia.appendChild(v);
+      } else {
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.caption;
+        lbMedia.appendChild(img);
+      }
+      lbCaption.textContent = item.caption;
+    }
+
+    function openLb(idx) {
+      currentIdx = idx;
+      renderLb(currentIdx);
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLb() {
+      lightbox.classList.remove('active');
+      lbMedia.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.gallery-item').forEach(el => {
+      el.addEventListener('click', () => openLb(+el.dataset.index));
+    });
+
+    lbClose.addEventListener('click', closeLb);
+    lbPrev.addEventListener('click', () => { currentIdx = (currentIdx - 1 + role.media.length) % role.media.length; renderLb(currentIdx); });
+    lbNext.addEventListener('click', () => { currentIdx = (currentIdx + 1) % role.media.length; renderLb(currentIdx); });
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLb(); });
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLb();
+      if (e.key === 'ArrowRight') { currentIdx = (currentIdx + 1) % role.media.length; renderLb(currentIdx); }
+      if (e.key === 'ArrowLeft') { currentIdx = (currentIdx - 1 + role.media.length) % role.media.length; renderLb(currentIdx); }
+    });
+
+    // ── Theme ──────────────────────────────────────────────────────────────────
+    const themeKey = 'mayur-portfolio-theme';
+    const themeToggle = document.getElementById('galleryThemeToggle');
+    function applyTheme(t) {
+      document.body.classList.toggle('theme-light', t === 'light');
+      themeToggle.textContent = t === 'light' ? '☾' : '☀';
+    }
+    applyTheme(localStorage.getItem(themeKey) || 'dark');
+    themeToggle.addEventListener('click', () => {
+      const next = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+      localStorage.setItem(themeKey, next);
+      applyTheme(next);
+    });
+  </script>
+</body>
+</html>
