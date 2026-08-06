@@ -289,35 +289,60 @@ document.addEventListener('DOMContentLoaded', () => {
       const previousStatus = contactForm.querySelector('.form-status');
       if (previousStatus) previousStatus.remove();
 
+      const formData = {
+          name: contactForm.querySelector('[name="name"]').value.trim(),
+          email: contactForm.querySelector('[name="email"]').value.trim(),
+          subject: contactForm.querySelector('[name="subject"]').value.trim(),
+          message: contactForm.querySelector('[name="message"]').value.trim()
+      };
+
       fetch(contactForm.action, {
-        method: 'POST',
-        body: new FormData(contactForm),
-        headers: { Accept: 'application/json' }
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
       })
-        .then(response => {
-          if (!response.ok) throw new Error('Form submission failed');
+      .then(async (response) => {
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+              throw new Error(result.message || "Form submission failed");
+          }
 
           const successMessage = document.createElement('div');
           successMessage.className = 'form-success';
           successMessage.setAttribute('role', 'status');
+
           const heading = document.createElement('h4');
           heading.textContent = 'Message sent successfully';
+
           const message = document.createElement('p');
-          message.textContent = 'Thank you for getting in touch. I will respond to your inquiry shortly.';
+          message.textContent =
+              'Thank you for getting in touch. I will respond to your inquiry shortly.';
+
           successMessage.append(heading, message);
+
           contactForm.parentElement.replaceChild(successMessage, contactForm);
-        })
-        .catch(() => {
+      })
+      .catch((error) => {
+          console.error("Contact form error:", error);
+
+          const previousError = contactForm.querySelector('.form-error');
+          if (previousError) previousError.remove();
+
           const errorMessage = document.createElement('p');
           errorMessage.className = 'form-status form-error';
           errorMessage.setAttribute('role', 'alert');
-          errorMessage.textContent = 'Your message could not be sent. Please email mayurvaidya.mmv@gmail.com directly.';
+          errorMessage.textContent =
+              'Unable to send your message. Please try again later or contact me directly at mayurvaidya.mmv@gmail.com.';
+
           contactForm.appendChild(errorMessage);
-        })
-        .finally(() => {
+      })
+      .finally(() => {
           submitButton.disabled = false;
           submitButton.textContent = originalText;
-        });
+      });
     });
   }
 
