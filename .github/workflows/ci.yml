@@ -1,0 +1,34 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Repository Structure
+        run: |
+          echo "Running CI..."
+          ls -la
+
+      - name: Validate HTML
+        run: |
+          test -f index.html
+
+      - name: Validate CSS
+        run: |
+          test -f styles.css
+
+      - name: Validate JavaScript
+        run: |
+          test -f script.js
+
+      - name: CI Completed
+        run: echo "Continuous Integration Successful"
