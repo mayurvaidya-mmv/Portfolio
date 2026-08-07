@@ -19,7 +19,7 @@
 
 ## 🏗️ System Architecture
 
-![Architecture](image)
+![Architecture](screenshots/architecture.png)
 
 ---
 
