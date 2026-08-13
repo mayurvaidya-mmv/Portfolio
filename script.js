@@ -147,12 +147,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update Caption text based on alt attributes
     let captionText = item.alt;
     const certRow = item.closest('.cert-row');
+    const certViewerDiv = item.closest('.certs-viewer');
     const awardRow = item.closest('.award-row');
 
     if (certRow) {
       const name = certRow.querySelector('.cert-name')?.textContent;
       const issuer = certRow.querySelector('.cert-issuer')?.textContent;
       captionText = name ? `${name} — ${issuer}` : item.alt;
+    } else if (certViewerDiv) {
+      const name = certViewerDiv.querySelector('#certViewerTitle')?.textContent;
+      const issuerAndYear = certViewerDiv.querySelector('#certViewerIssuer')?.textContent;
+      captionText = name && issuerAndYear ? `${name} — ${issuerAndYear}` : item.alt;
     } else if (awardRow) {
       const name = awardRow.querySelector('.award-name')?.textContent;
       const desc = awardRow.querySelector('.award-description')?.textContent;
@@ -267,6 +272,83 @@ document.addEventListener('DOMContentLoaded', () => {
   if (awardViewer) {
     awardPrev.addEventListener('click', () => changeAward(-1));
     awardNext.addEventListener('click', () => changeAward(1));
+  }
+
+  // ==========================================================================
+  // 6b. CERTIFICATIONS GALLERY SLIDER
+  // ==========================================================================
+  const certs = [
+    {
+      src: 'Certifications/AWS AI Practitioner Certificate.png',
+      alt: 'AWS Certified AI Practitioner',
+      title: 'AWS Certified AI Practitioner',
+      issuer: 'AWS',
+      year: '2026'
+    },
+    {
+      src: 'Certifications/Udemy AWS AI Certificate UC-979fec30-46e2-45ae-9b32-ec87a344bf3f_copy-1.jpg',
+      alt: 'Ultimate AWS Certified AI Practitioner (AIF-C01)',
+      title: 'Ultimate AWS Certified AI Practitioner (AIF-C01)',
+      issuer: 'Udemy',
+      year: '2026'
+    },
+    {
+      src: 'Certifications/Introduction to Artificial Intelligence.jpg',
+      alt: 'Introduction to Artificial Intelligence',
+      title: 'Introduction to Artificial Intelligence',
+      issuer: 'IBM',
+      year: '2025'
+    },
+    {
+      src: 'Certifications/Machine Learning And Deep Learning.jpg',
+      alt: 'Machine Learning and Deep Learning',
+      title: 'Machine Learning and Deep Learning',
+      issuer: 'Udemy',
+      year: '2025'
+    },
+    {
+      src: 'Certifications/Natural Language Processing and Computer Vision.jpg',
+      alt: 'NLP and Computer Vision',
+      title: 'NLP and Computer Vision',
+      issuer: 'Udemy',
+      year: '2025'
+    },
+    {
+      src: 'Certifications/Your Future in AI -The Job Landscape.jpg',
+      alt: 'Your Future in AI — The Job Landscape',
+      title: 'Your Future in AI — The Job Landscape',
+      issuer: 'IBM',
+      year: '2025'
+    }
+  ];
+  let activeCertIndex = 0;
+
+  const certViewer = document.getElementById('certsViewer');
+  const certViewerImage = document.getElementById('certViewerImage');
+  const certViewerTitle = document.getElementById('certViewerTitle');
+  const certViewerIssuer = document.getElementById('certViewerIssuer');
+  const certViewerCount = document.getElementById('certViewerCount');
+  const certPrev = document.getElementById('certPrev');
+  const certNext = document.getElementById('certNext');
+
+  function renderCert(index) {
+    if (!certViewer || !certs[index]) return;
+    const cert = certs[index];
+    certViewerImage.src = cert.src;
+    certViewerImage.alt = cert.alt;
+    certViewerTitle.textContent = cert.title;
+    certViewerIssuer.textContent = `${cert.issuer} · ${cert.year}`;
+    certViewerCount.textContent = `${String(index + 1).padStart(2, '0')} / ${String(certs.length).padStart(2, '0')}`;
+  }
+
+  function changeCert(direction) {
+    activeCertIndex = (activeCertIndex + direction + certs.length) % certs.length;
+    renderCert(activeCertIndex);
+  }
+
+  if (certViewer) {
+    certPrev.addEventListener('click', () => changeCert(-1));
+    certNext.addEventListener('click', () => changeCert(1));
   }
 
   const contactForm = document.getElementById('contactForm');
