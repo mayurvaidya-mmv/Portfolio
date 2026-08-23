@@ -33,5 +33,13 @@ jobs:
             --exclude "README.md" \
             --exclude ".gitignore"
 
+      - name: Deploy S3 Content to AWS Amplify
+        run: |
+          aws amplify start-deployment \
+            --app-id d2xwzznmx5uwd4 \
+            --branch-name staging \
+            --source-url s3://${{ secrets.S3_BUCKET }} \
+            --source-url-type BUCKET_PREFIX
+
       - name: Deployment Completed
-        run: echo "Portfolio Successfully Deployed"
+        run: echo "Portfolio Successfully Deployed to S3 and Amplify"
