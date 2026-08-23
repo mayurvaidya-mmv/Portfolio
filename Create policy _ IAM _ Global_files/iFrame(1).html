@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- saved from url=(0193)https://global.console.aws.amazon.com/lotus/csp/@amzn/aws-paddy-nav-widget/1/iFrame.html?packageName=%40amzn%2Faws-paddy-nav-widget&majorVersion=1&versionId=a5ebf951-a677-4795-b352-b2cbdfc236b3 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; upgrade-insecure-requests ; connect-src data: https://health.us-east-1.amazonaws.com https://notifications.eu-north-1.amazonaws.com https://notifications.me-south-1.amazonaws.com https://notifications.ap-southeast-7.amazonaws.com https://notifications.ap-south-1.amazonaws.com https://notifications.eu-west-3.amazonaws.com https://notifications.ap-southeast-3.amazonaws.com https://notifications.us-east-2.amazonaws.com https://notifications.af-south-1.amazonaws.com https://notifications.eu-west-1.amazonaws.com https://notifications.me-central-1.amazonaws.com https://notifications.eu-central-1.amazonaws.com https://notifications.sa-east-1.amazonaws.com https://notifications.ap-east-1.amazonaws.com https://notifications.ap-south-2.amazonaws.com https://notifications.us-east-1.amazonaws.com https://notifications.ap-northeast-2.amazonaws.com https://notifications.ap-northeast-3.amazonaws.com https://notifications.ap-southeast-5.amazonaws.com https://notifications.eu-west-2.amazonaws.com https://notifications.ap-southeast-4.amazonaws.com https://notifications.eu-south-1.amazonaws.com https://notifications.ap-northeast-1.amazonaws.com https://notifications.us-west-2.amazonaws.com https://notifications.mx-central-1.amazonaws.com https://notifications.us-west-1.amazonaws.com https://notifications.ap-southeast-1.amazonaws.com https://notifications.ap-southeast-2.amazonaws.com https://notifications.il-central-1.amazonaws.com https://notifications.ca-central-1.amazonaws.com https://notifications.ca-west-1.amazonaws.com https://notifications.eu-south-2.amazonaws.com https://notifications.eu-central-2.amazonaws.com; script-src &#39;sha384-7ykuczWECFGkDyw7CSCNTusf2DyEma2LCLVW9TaYFwy8/fqRPPeAQtt5hsWAxbUF&#39;">
+  </head>
+  <body>
+    <script>"use strict";
+(() => {
+  // <define:partitionalConsoleRootDomains>
+  var define_partitionalConsoleRootDomains_default = [".aws-dev.amazon.com", ".corp.amazon.com", ".integ.amazon.com", ".proxy.amazon.com", ".aws.amazon.com", ".aws.com"];
+
+  // node_modules/@amzn/aws-console-lotus-data-plane-interface/dist/csp.js
+  var ExternalCspAssetName;
+  (function(ExternalCspAssetName2) {
+    ExternalCspAssetName2["WebWorker"] = "worker.js";
+    ExternalCspAssetName2["IFrame"] = "iFrame.html";
+  })(ExternalCspAssetName || (ExternalCspAssetName = {}));
+  var ErrorType;
+  (function(ErrorType2) {
+    ErrorType2["FailedFetch"] = "FAILED_FETCH";
+    ErrorType2["InvalidRequest"] = "INVALID_REQUEST";
+    ErrorType2["FailedCsp"] = "FAILED_CSP";
+  })(ErrorType || (ErrorType = {}));
+
+  // lib/EventHandler.js
+  var EventHandler = class {
+    partitionalConsoleRootDomains;
+    loadStatus;
+    constructor(partitionalConsoleRootDomains2, loadStatus) {
+      this.partitionalConsoleRootDomains = partitionalConsoleRootDomains2;
+      this.loadStatus = loadStatus;
+    }
+    async handleEvent(event) {
+      if (event.data.isPingCheck === true) {
+        this.handlePingStatusEvent(event);
+      } else {
+        await this.handleFetchEvent(event);
+      }
+    }
+    handlePingStatusEvent(event) {
+      const pingStatusResponse = { status: this.loadStatus };
+      if (!event.ports[0]) {
+        console.warn(`Event does not contain a MessageChannel port, therefore unable to call postMessage with pingStatusResponse: ${this.loadStatus}`);
+        return;
+      }
+      event.ports[0].postMessage(pingStatusResponse);
+    }
+    async handleFetchEvent(fetchEvent) {
+      if (this.loadStatus !== 200) {
+        return this.respondFetchToPage(fetchEvent, {
+          status: this.loadStatus,
+          errorType: ErrorType.FailedCsp
+        });
+      }
+      if (this.partitionalConsoleRootDomains.find((allowedDomainRoot) => {
+        return new URL(fetchEvent.origin).hostname.endsWith(allowedDomainRoot);
+      }) === void 0) {
+        return this.respondFetchToPage(fetchEvent, {
+          error: {
+            name: "InvalidRequestError",
+            message: "Invalid request origin"
+          },
+          errorType: ErrorType.InvalidRequest
+        });
+      }
+      let request;
+      try {
+        request = this.buildRequest(fetchEvent.data);
+      } catch (error) {
+        return this.respondFetchToPage(fetchEvent, {
+          error: {
+            name: error.name,
+            message: error.message
+          },
+          errorType: ErrorType.InvalidRequest
+        });
+      }
+      try {
+        const response = await fetch(request);
+        const fetchReponse = await this.buildResponse(response);
+        return this.respondFetchToPage(fetchEvent, fetchReponse);
+      } catch (error) {
+        return this.respondFetchToPage(fetchEvent, {
+          // Do not directly provide the error object because it cannot be cloned in Firefox and Safari
+          error: {
+            name: error.name,
+            message: error.message
+          },
+          errorType: ErrorType.FailedFetch
+        });
+      }
+    }
+    buildRequest(fetchRequest) {
+      const { endpoint, requestInit } = fetchRequest;
+      if (!endpoint || !requestInit) {
+        throw new Error("Missing endpoint or requestInit from event");
+      }
+      return new Request(endpoint, { ...requestInit });
+    }
+    async buildResponse(response) {
+      const headersRecord = {};
+      response.headers.forEach((value, key) => {
+        headersRecord[key] = value;
+      });
+      const responseInit = {
+        headers: headersRecord,
+        status: response.status,
+        statusText: response.statusText
+      };
+      const responseArrayBuffer = await response.arrayBuffer();
+      return {
+        responseInit,
+        responseArrayBuffer,
+        errorType: null
+      };
+    }
+    respondFetchToPage(event, response) {
+      if (!event.ports[0]) {
+        console.warn(`Event does not contain a MessageChannel port, therefore unable to call postMessage with errorType: ${response.errorType}`);
+        return;
+      }
+      if (response.errorType === null) {
+        event.ports[0].postMessage(response, [response.responseArrayBuffer]);
+      } else {
+        event.ports[0].postMessage(response);
+      }
+    }
+  };
+
+  // lib/HttpIFrameScript.ts
+  var eventHandler = new EventHandler(define_partitionalConsoleRootDomains_default, 200);
+  self.onmessage = (event) => {
+    eventHandler.handleEvent(event);
+  };
+})();
+;</script>
+  
+</body></html>
