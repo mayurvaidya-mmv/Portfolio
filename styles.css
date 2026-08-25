@@ -23,7 +23,7 @@
 
   --nav-bg: rgba(12, 12, 12, 0.9);
   --section-pad: 80px 0;
-  --content-width: 1100px;
+  --content-width: min(1600px, 92vw);
 }
 
 /* --- Light Mode Colors Override --- */
@@ -125,9 +125,10 @@ input, textarea {
    2. REUSABLE UTILITIES
    ========================================================================== */
 .main-content {
+  width: 100%;
   max-width: var(--content-width);
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 clamp(20px, 3vw, 32px);
 }
 
 @media (max-width: 767px) {
@@ -154,7 +155,7 @@ input, textarea {
 }
 
 .section-title {
-  font-size: 36px;
+  font-size: clamp(24px, 5vw, 36px);
   font-weight: 700;
   color: var(--text-1);
   margin-bottom: 40px;
@@ -239,7 +240,7 @@ body.theme-light .btn-ghost:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
+  padding: 0 clamp(20px, 3vw, 32px);
 }
 
 @media (max-width: 767px) {
@@ -385,7 +386,7 @@ body.theme-light .theme-icon-moon {
    ========================================================================== */
 .hero {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
   gap: 60px;
   align-items: center;
   padding: 120px 0 60px;
@@ -502,6 +503,9 @@ body.theme-light .theme-icon-moon {
 
 /* Mobile responsive details */
 @media (max-width: 767px) {
+  .hero {
+    padding: 80px 0 40px;
+  }
   .hero-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -527,7 +531,7 @@ body.theme-light .theme-icon-moon {
 
 .project-row {
   display: grid;
-  grid-template-columns: 4fr 6fr;
+  grid-template-columns: minmax(280px, 4fr) minmax(0, 6fr);
   gap: 40px;
   align-items: stretch;
   padding: 40px 16px;
@@ -619,7 +623,7 @@ body.theme-light .project-row:hover {
   gap: 16px;
   overflow-x: auto;
   width: 100%;
-  height: 220px;
+  height: clamp(180px, 18vw, 220px);
   scrollbar-width: none; /* Hide scrollbar for clean strip look */
   -webkit-overflow-scrolling: touch;
 }
@@ -628,8 +632,9 @@ body.theme-light .project-row:hover {
   display: none;
 }
 
-.project-image-strip img {
-  height: 220px;
+.project-image-strip img,
+.project-image-strip video {
+  height: clamp(180px, 18vw, 220px);
   width: auto;
   object-fit: cover;
   border-radius: 6px;
@@ -660,8 +665,22 @@ body.theme-light .project-row:hover {
   .project-image-strip {
     height: 180px;
   }
-  .project-image-strip img {
+  .project-image-strip img,
+  .project-image-strip video {
     height: 180px;
+  }
+}
+
+@media (max-width: 767px) {
+  .project-image-strip {
+    height: 140px;
+  }
+  .project-image-strip img,
+  .project-image-strip video {
+    height: 140px;
+  }
+  .project-name {
+    font-size: 18px;
   }
 }
 
@@ -733,6 +752,20 @@ body.theme-light .project-row:hover {
 
 .pub-link:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  .pub-header {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  .pub-title {
+    font-size: 16px;
+  }
+  .pub-desc {
+    max-width: 100%;
+  }
 }
 
 
@@ -811,8 +844,9 @@ body.theme-light .project-row:hover {
 }
 
 .leadership-preview-card img {
-  width: 200px;
-  height: 130px;
+  width: clamp(160px, 16vw, 200px);
+  height: auto;
+  aspect-ratio: 20 / 13;
   object-fit: cover;
   border-radius: 6px;
   border: 1px solid var(--border);
@@ -972,6 +1006,7 @@ body.theme-light .project-row:hover {
    8. CERTIFICATIONS & AWARDS
    ========================================================================== */
 .certs-viewer {
+  width: 100%;
   max-width: 820px;
   margin-inline: auto;
 }
@@ -1061,6 +1096,7 @@ body.theme-light .project-row:hover {
 }
 
 .awards-viewer {
+  width: 100%;
   max-width: 820px;
   margin-inline: auto;
 }
@@ -1202,7 +1238,7 @@ body.theme-light .project-row:hover {
    ========================================================================== */
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
   gap: 60px;
   align-items: start;
 }
@@ -1244,6 +1280,12 @@ body.theme-light .project-row:hover {
   font-size: 14px;
   color: var(--text-2);
   position: relative;
+}
+
+@media (min-width: 768px) {
+  .about-skills-list li:nth-child(even) {
+    text-align: right;
+  }
 }
 
 .education-timeline {
@@ -1316,7 +1358,7 @@ body.theme-light .project-row:hover {
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  gap: clamp(32px, 4vw, 60px);
   align-items: start;
 }
 
@@ -1355,6 +1397,7 @@ body.theme-light .project-row:hover {
   font-size: 16px;
   font-weight: 500;
   color: var(--text-1);
+  word-break: break-all;
 }
 
 .contact-value:hover {
@@ -1581,7 +1624,8 @@ body.theme-light .lightbox {
   width: 100%;
 }
 
-.lightbox-media-container img {
+.lightbox-media-container img,
+.lightbox-media-container video {
   max-width: 100%;
   max-height: 70vh;
   object-fit: contain;
@@ -1598,7 +1642,15 @@ body.theme-light .lightbox {
 
 @media (max-width: 767px) {
   .lightbox-arrow {
-    display: none; /* Hide arrows on small screens, rely on swipe / indicator tap */
+    display: none;
+  }
+  .lightbox-content-wrapper {
+    max-width: 96%;
+    max-height: 88%;
+  }
+  .lightbox-media-container img,
+  .lightbox-media-container video {
+    max-height: 60vh;
   }
 }
 
@@ -1787,5 +1839,22 @@ body.theme-light .lightbox {
   .detail-hero {
     grid-template-columns: 1fr;
     gap: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .detail-gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .detail-gallery-grid img,
+  .detail-gallery-grid video {
+    border-radius: 4px;
+  }
+  .detail-panel {
+    padding: 20px 16px;
+  }
+  .detail-title {
+    font-size: clamp(22px, 6vw, 36px);
   }
 }

@@ -138,11 +138,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lightboxMedia.innerHTML = '';
 
-    // Create new image tag in Lightbox container
-    const img = document.createElement('img');
-    img.src = item.src;
-    img.alt = item.alt || 'Full size view';
-    lightboxMedia.appendChild(img);
+    // Create new element in Lightbox container depending on media type
+    if (item.tagName.toLowerCase() === 'video') {
+      const video = document.createElement('video');
+      video.src = item.src;
+      video.controls = true;
+      video.autoplay = true;
+      lightboxMedia.appendChild(video);
+    } else {
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = item.alt || 'Full size view';
+      lightboxMedia.appendChild(img);
+    }
 
     // Update Caption text based on alt attributes
     let captionText = item.alt;
